@@ -25,6 +25,7 @@ import 'package:model/extensions/identity_extension.dart';
 import 'package:model/extensions/session_extension.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rich_text_composer/rich_text_composer.dart';
+import 'package:rich_text_composer/views/commons/constants.dart';
 import 'package:tmail_ui_user/features/base/base_controller.dart';
 import 'package:tmail_ui_user/features/composer/presentation/controller/rich_text_mobile_tablet_controller.dart';
 import 'package:tmail_ui_user/features/composer/presentation/controller/rich_text_web_controller.dart';
@@ -64,7 +65,6 @@ class IdentityCreatorController extends BaseController {
   final actionType = IdentityActionType.create.obs;
   final isDefaultIdentity = RxBool(false);
   final isDefaultIdentitySupported = RxBool(false);
-  final isMobileEditorFocus = RxBool(false);
   final isCompressingInlineImage = RxBool(false);
 
   final RichTextController keyboardRichTextController = RichTextController();
@@ -285,11 +285,21 @@ class IdentityCreatorController extends BaseController {
     return defaultIdentityIds?.length != allIdentities?.length;
   }
 
-  void updateEmailOfIdentity(EmailAddress? newEmailAddress) {
+  void updateEmailOfIdentity(BuildContext context, EmailAddress? newEmailAddress) {
+    if (PlatformInfo.isMobile) {
+      richTextMobileTabletController.htmlEditorApi?.unfocus();
+    }
+    FocusScope.of(context).unfocus();
+
     emailOfIdentity.value = newEmailAddress;
   }
 
-  void updaterReplyToOfIdentity(EmailAddress? newEmailAddress) {
+  void updaterReplyToOfIdentity(BuildContext context, EmailAddress? newEmailAddress) {
+    if (PlatformInfo.isMobile) {
+      richTextMobileTabletController.htmlEditorApi?.unfocus();
+    }
+    FocusScope.of(context).unfocus();
+
     replyToOfIdentity.value = newEmailAddress;
   }
 
@@ -422,7 +432,6 @@ class IdentityCreatorController extends BaseController {
   void clearFocusEditor(BuildContext context) {
     if (PlatformInfo.isMobile) {
       keyboardRichTextController.htmlEditorApi?.unfocus();
-      KeyboardUtils.hideSystemKeyboardMobile();
     }
     KeyboardUtils.hideKeyboard(context);
   }
@@ -438,19 +447,20 @@ class IdentityCreatorController extends BaseController {
     keyboardRichTextController.onCreateHTMLEditor(
       editorApi,
       onEnterKeyDown: _onEnterKeyDownOnMobile,
-      onFocus: _onFocusHTMLEditorOnMobile,
-      context: context
+      onFocus: () => _onFocusHTMLEditorOnMobile(context)
     );
-    keyboardRichTextController.htmlEditorApi?.onFocusOut = () {
-      keyboardRichTextController.hideRichTextView();
-      isMobileEditorFocus.value = false;
-    };
   }
 
-  void _onFocusHTMLEditorOnMobile() async {
+  void _onFocusHTMLEditorOnMobile(BuildContext context) async {
+    if (PlatformInfo.isAndroid) {
+      FocusScope.of(context).unfocus();
+      await Future.delayed(
+        const Duration(milliseconds: 300),
+        keyboardRichTextController.showDeviceKeyboard);
+    }
+
     inputBccIdentityFocusNode.unfocus();
     inputNameIdentityFocusNode.unfocus();
-    isMobileEditorFocus.value = true;
     if (htmlKey.currentContext != null) {
       await Scrollable.ensureVisible(htmlKey.currentContext!);
     }
