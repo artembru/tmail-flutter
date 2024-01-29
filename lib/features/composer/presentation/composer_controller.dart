@@ -426,11 +426,12 @@ class ComposerController extends BaseController with DragDropFileMixin {
     subjectEmailInputFocusNode?.addListener(() {
       log('ComposerController::createFocusNodeInput():subjectEmailInputFocusNode: ${subjectEmailInputFocusNode?.hasFocus}');
       if (subjectEmailInputFocusNode?.hasFocus == true) {
-        if (PlatformInfo.isMobile) {
-          htmlEditorApi?.unfocus();
-        }
         _collapseAllRecipient();
         _autoCreateEmailTag();
+
+        if (PlatformInfo.isMobile) {
+          keyboardRichTextController.hideRichTextView();
+        }
       }
     });
   }
@@ -443,8 +444,7 @@ class ComposerController extends BaseController with DragDropFileMixin {
     keyboardRichTextController.onCreateHTMLEditor(
       editorApi,
       onEnterKeyDown: _onEnterKeyDown,
-      context: context,
-      onFocus: _onEditorFocusOnMobile,
+      onFocus: () => _onEditorFocusOnMobile(context),
       onChangeCursor: (coordinates) {
         _onChangeCursorOnMobile(coordinates, context);
       },
@@ -1304,7 +1304,6 @@ class ComposerController extends BaseController with DragDropFileMixin {
     log('ComposerController::clearFocus:');
     if (PlatformInfo.isMobile) {
       htmlEditorApi?.unfocus();
-      KeyboardUtils.hideSystemKeyboardMobile();
     }
     FocusScope.of(context).unfocus();
   }
@@ -1497,7 +1496,7 @@ class ComposerController extends BaseController with DragDropFileMixin {
       }
       _closeSuggestionBox();
       if (PlatformInfo.isMobile) {
-        htmlEditorApi?.unfocus();
+        keyboardRichTextController.hideRichTextView();
       }
     } else {
       switch(prefixEmailAddress) {
@@ -1632,7 +1631,13 @@ class ComposerController extends BaseController with DragDropFileMixin {
     _closeComposerAction();
   }
 
-  void _onEditorFocusOnMobile() {
+  void _onEditorFocusOnMobile(BuildContext context) async {
+    if (PlatformInfo.isAndroid) {
+      FocusScope.of(context).unfocus();
+      await Future.delayed(
+        const Duration(milliseconds: 300),
+        keyboardRichTextController.showDeviceKeyboard);
+    }
     _collapseAllRecipient();
     _autoCreateEmailTag();
   }
