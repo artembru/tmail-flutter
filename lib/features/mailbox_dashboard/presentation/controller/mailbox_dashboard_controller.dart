@@ -415,7 +415,6 @@ class MailboxDashBoardController extends ReloadableController {
     _emailAddressStreamSubscription =
       _emailReceiveManager.pendingEmailAddressInfo.stream.listen((emailAddress) {
         if (emailAddress?.email?.isNotEmpty == true) {
-          _emailReceiveManager.clearPendingEmailAddress();
           goToComposer(ComposerArguments.fromEmailAddress(emailAddress!));
         }
       });
@@ -425,7 +424,6 @@ class MailboxDashBoardController extends ReloadableController {
     _emailContentStreamSubscription =
       _emailReceiveManager.pendingEmailContentInfo.stream.listen((emailContent) {
         if (emailContent?.content.isNotEmpty == true) {
-          _emailReceiveManager.clearPendingEmailContent();
           goToComposer(ComposerArguments.fromContentShared([emailContent!].asHtmlString));
         }
       });
@@ -435,7 +433,6 @@ class MailboxDashBoardController extends ReloadableController {
     _fileReceiveManagerStreamSubscription =
       _emailReceiveManager.pendingFileInfo.stream.listen((listFile) {
         if (listFile.isNotEmpty) {
-          _emailReceiveManager.clearPendingFileInfo();
           goToComposer(ComposerArguments.fromFileShared(listFile));
         }
       });
