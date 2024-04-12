@@ -181,6 +181,8 @@ class SearchEmailView extends GetWidget<SearchEmailController>
         padding: const EdgeInsets.only(right: 8),
         child: InkWell(
           onTap: () {
+            FocusScope.of(context).unfocus();
+
             if (filter == QuickSearchFilter.hasAttachment) {
               controller.selectQuickSearchFilter(context, filter);
             } else if (controller.responsiveUtils.isMobile(context)) {
@@ -205,6 +207,8 @@ class SearchEmailView extends GetWidget<SearchEmailController>
           },
           onTapDown: (detail) {
             if (!controller.responsiveUtils.isMobile(context)) {
+              FocusScope.of(context).unfocus();
+
               final screenSize = MediaQuery.of(context).size;
               final offset = detail.globalPosition;
               final position = RelativeRect.fromLTRB(
