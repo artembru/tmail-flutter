@@ -51,6 +51,7 @@ import 'package:tmail_ui_user/features/mailbox_dashboard/domain/usecases/get_com
 import 'package:tmail_ui_user/features/mailbox_dashboard/domain/usecases/quick_search_email_interactor.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/domain/usecases/remove_composer_cache_on_web_interactor.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/domain/usecases/remove_email_drafts_interactor.dart';
+import 'package:tmail_ui_user/features/mailbox_dashboard/domain/usecases/get_composed_email_from_local_storage_browser_interactor.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/domain/usecases/save_recent_search_interactor.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/controller/advanced_filter_controller.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/controller/app_grid_dashboard_controller.dart';
@@ -152,6 +153,7 @@ const fallbackGenerators = {
   MockSpec<SearchEmailInteractor>(),
   MockSpec<SearchMoreEmailInteractor>(),
   MockSpec<RemoveComposerCacheOnWebInteractor>(),
+  MockSpec<GetComposedEmailFromLocalStorageBrowserInteractor>(),
 ])
 void main() {
   // mock mailbox dashboard controller direct dependencies
@@ -233,6 +235,7 @@ void main() {
   final refreshAllMailboxInteractor = MockRefreshAllMailboxInteractor();
   final removeComposerCacheOnWebInteractor = MockRemoveComposerCacheOnWebInteractor();
   final getAllIdentitiesInteractor = MockGetAllIdentitiesInteractor();
+  final getComposedEmailFromLocalStorageBrowserInteractor = MockGetComposedEmailFromLocalStorageBrowserInteractor();
   late MailboxController mailboxController;
 
   // mock thread controller direct dependencies
@@ -285,6 +288,7 @@ void main() {
       Get.put<UpdateAuthenticationAccountInteractor>(updateAuthenticationAccountInteractor);
       Get.put<GetAllIdentitiesInteractor>(getAllIdentitiesInteractor);
       Get.put<RemoveComposerCacheOnWebInteractor>(removeComposerCacheOnWebInteractor);
+      Get.put<GetComposedEmailFromLocalStorageBrowserInteractor>(getComposedEmailFromLocalStorageBrowserInteractor);
 
       Get.testMode = true;
       PackageInfo.setMockInitialValues(
@@ -329,6 +333,7 @@ void main() {
         getRestoredDeletedMessageInteractor,
         removeComposerCacheOnWebInteractor,
         getAllIdentitiesInteractor,
+        getComposedEmailFromLocalStorageBrowserInteractor,
       );
       Get.put(mailboxDashboardController);
       mailboxDashboardController.onReady();
