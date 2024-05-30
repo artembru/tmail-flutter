@@ -29,17 +29,32 @@ class AppGridDashboardItem extends StatelessWidget {
             width: AppGridDashboardStyle.hoverIconSize,
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(children: [
-              app.iconName.endsWith("svg")
-                ? SvgPicture.asset(
-                    _imagePaths.getConfigurationImagePath(app.iconName),
-                    width: AppGridDashboardStyle.iconSize,
-                    height: AppGridDashboardStyle.iconSize,
-                    fit: BoxFit.fill)
-                : Image.asset(
-                    _imagePaths.getConfigurationImagePath(app.iconName),
-                    width: AppGridDashboardStyle.iconSize,
-                    height: AppGridDashboardStyle.iconSize,
-                    fit: BoxFit.fill),
+              if (app.iconName?.isNotEmpty == true)
+                app.iconName!.endsWith("svg")
+                  ? SvgPicture.asset(
+                      _imagePaths.getConfigurationImagePath(app.iconName!),
+                      width: AppGridDashboardStyle.iconSize,
+                      height: AppGridDashboardStyle.iconSize,
+                      fit: BoxFit.fill)
+                  : Image.asset(
+                      _imagePaths.getConfigurationImagePath(app.iconName!),
+                      width: AppGridDashboardStyle.iconSize,
+                      height: AppGridDashboardStyle.iconSize,
+                      fit: BoxFit.fill)
+              else if (app.publicIconUri != null)
+                Image.network(
+                  app.publicIconUri.toString(),
+                  width: AppGridDashboardStyle.iconSize,
+                  height: AppGridDashboardStyle.iconSize,
+                  fit: BoxFit.fill,
+                  errorBuilder: (_, error, stackTrace) {
+                    return Container(
+                      width: AppGridDashboardStyle.iconSize,
+                      height: AppGridDashboardStyle.iconSize,
+                      color: AppColor.textFieldHintColor,
+                    );
+                  }
+                ),
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
