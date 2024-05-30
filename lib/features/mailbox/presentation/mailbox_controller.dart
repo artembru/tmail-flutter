@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:core/core.dart';
+import 'package:core/utils/application_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -89,6 +90,7 @@ import 'package:tmail_ui_user/main/routes/route_utils.dart';
 class MailboxController extends BaseMailboxController with MailboxActionHandlerMixin {
 
   final mailboxDashBoardController = Get.find<MailboxDashBoardController>();
+  final applicationManager = Get.find<ApplicationManager>();
   final isMailboxListScrollable = false.obs;
   final CreateNewMailboxInteractor _createNewMailboxInteractor;
   final DeleteMultipleMailboxInteractor _deleteMultipleMailboxInteractor;
