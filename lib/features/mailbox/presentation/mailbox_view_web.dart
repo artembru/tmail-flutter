@@ -63,9 +63,8 @@ class MailboxView extends BaseMailboxView {
         ),
         child: Row(children: [
           ApplicationLogoWidthTextWidget(),
-          ApplicationVersionWidget(
-            applicationManager: controller.applicationManager,
-            padding: const EdgeInsetsDirectional.only(top: 12, start: 8),
+          const ApplicationVersionWidget(
+            padding: EdgeInsetsDirectional.only(top: 12, start: 8),
           )
         ])
     );

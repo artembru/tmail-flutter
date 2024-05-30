@@ -1,25 +1,16 @@
 import 'package:core/presentation/extensions/color_extension.dart';
-import 'package:core/presentation/resources/image_paths.dart';
 import 'package:core/presentation/utils/responsive_utils.dart';
-import 'package:core/presentation/views/button/tmail_button_widget.dart';
 import 'package:core/presentation/views/image/avatar_builder.dart';
-import 'package:core/utils/application_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_portal/flutter_portal.dart';
-import 'package:get/get.dart';
 import 'package:model/user/user_profile.dart';
 import 'package:tmail_ui_user/features/base/widget/application_logo_with_text_widget.dart';
 import 'package:tmail_ui_user/features/base/widget/application_version_widget.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/controller/app_grid_dashboard_controller.dart';
 import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/styles/navigation_bar_style.dart';
-import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/widgets/app_dashboard/app_grid_dashboard_overlay.dart';
+import 'package:tmail_ui_user/features/mailbox_dashboard/presentation/widgets/app_dashboard/app_grid_dashboard_icon.dart';
 import 'package:tmail_ui_user/main/utils/app_config.dart';
-import 'package:tmail_ui_user/main/utils/app_utils.dart';
 
 class NavigationBarWidget extends StatelessWidget {
-
-  final ImagePaths _imagePaths = Get.find<ImagePaths>();
-  final ApplicationManager _applicationManager = Get.find<ApplicationManager>();
 
   final UserProfile? userProfile;
   final Widget? searchForm;
@@ -28,7 +19,7 @@ class NavigationBarWidget extends StatelessWidget {
   final VoidCallback? onShowAppDashboardAction;
   final OnTapAvatarActionWithPositionClick? onTapAvatarAction;
 
-  NavigationBarWidget({
+  const NavigationBarWidget({
     super.key,
     this.userProfile,
     this.searchForm,
@@ -51,7 +42,7 @@ class NavigationBarWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ApplicationLogoWidthTextWidget(onTapAction: onTapApplicationLogoAction),
-              ApplicationVersionWidget(applicationManager: _applicationManager)
+              const ApplicationVersionWidget()
             ],
           ),
         ),
@@ -66,39 +57,10 @@ class NavigationBarWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (AppConfig.appGridDashboardAvailable && appGridController != null)
-                  Obx(() {
-                    final isAppGridOpen = appGridController!.isAppGridDashboardOverlayOpen.value;
-                    return PortalTarget(
-                        visible: isAppGridOpen,
-                        portalFollower: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: appGridController!.toggleAppGridDashboard
-                        ),
-                        child: PortalTarget(
-                          anchor: Aligned(
-                            follower: AppUtils.isDirectionRTL(context)
-                              ? Alignment.topLeft
-                              : Alignment.topRight,
-                            target: AppUtils.isDirectionRTL(context)
-                              ? Alignment.bottomLeft
-                              : Alignment.bottomRight
-                          ),
-                          portalFollower: Obx(() {
-                            final listApps = appGridController!.linagoraApplications.value;
-                            if (listApps != null) {
-                              return AppDashboardOverlay(listApps);
-                            }
-                            return const SizedBox.shrink();
-                          }),
-                          visible: isAppGridOpen,
-                          child: TMailButtonWidget.fromIcon(
-                            icon: _imagePaths.icAppDashboard,
-                            backgroundColor: Colors.transparent,
-                            onTapActionCallback: onShowAppDashboardAction,
-                          ),
-                        )
-                    );
-                  }),
+                  AppGridDashboardIcon(
+                    appGridController: appGridController!,
+                    onShowAppDashboardAction: onShowAppDashboardAction,
+                  ),
                 const SizedBox(width: 16),
                 (AvatarBuilder()
                   ..text(userProfile?.getAvatarText() ?? '')
@@ -123,39 +85,10 @@ class NavigationBarWidget extends StatelessWidget {
           ...[
             const Spacer(),
             if (AppConfig.appGridDashboardAvailable && appGridController != null)
-              Obx(() {
-                final isAppGridOpen = appGridController!.isAppGridDashboardOverlayOpen.value;
-                return PortalTarget(
-                  visible: isAppGridOpen,
-                  portalFollower: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: appGridController!.toggleAppGridDashboard
-                  ),
-                  child: PortalTarget(
-                    anchor: Aligned(
-                      follower: AppUtils.isDirectionRTL(context)
-                        ? Alignment.topLeft
-                        : Alignment.topRight,
-                      target: AppUtils.isDirectionRTL(context)
-                        ? Alignment.bottomLeft
-                        : Alignment.bottomRight
-                    ),
-                    portalFollower: Obx(() {
-                      final listApps = appGridController!.linagoraApplications.value;
-                      if (listApps != null) {
-                        return AppDashboardOverlay(listApps);
-                      }
-                      return const SizedBox.shrink();
-                    }),
-                    visible: isAppGridOpen,
-                    child: TMailButtonWidget.fromIcon(
-                      icon: _imagePaths.icAppDashboard,
-                      backgroundColor: Colors.transparent,
-                      onTapActionCallback: onShowAppDashboardAction,
-                    ),
-                  )
-                );
-              }),
+              AppGridDashboardIcon(
+                appGridController: appGridController!,
+                onShowAppDashboardAction: onShowAppDashboardAction,
+              ),
             const SizedBox(width: 16),
             (AvatarBuilder()
               ..text(userProfile?.getAvatarText() ?? '')

@@ -1,7 +1,6 @@
 
 import 'package:core/presentation/resources/image_paths.dart';
 import 'package:core/presentation/utils/responsive_utils.dart';
-import 'package:core/utils/application_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/manage_account_dashboard_controller.dart';
@@ -13,7 +12,6 @@ class ManageAccountMenuController extends GetxController {
   final dashBoardController = Get.find<ManageAccountDashBoardController>();
   final responsiveUtils = Get.find<ResponsiveUtils>();
   final imagePaths = Get.find<ImagePaths>();
-  final applicationManager = Get.find<ApplicationManager>();
 
   final listAccountMenuItem = RxList<AccountMenuItem>([
     AccountMenuItem.profiles,
