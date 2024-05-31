@@ -4,6 +4,7 @@ import 'package:core/presentation/views/button/tmail_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tmail_ui_user/features/email/domain/model/event_action.dart';
+import 'package:tmail_ui_user/features/email/presentation/extensions/event_action_type_extension.dart';
 import 'package:tmail_ui_user/features/email/presentation/styles/calendar_event_action_button_widget_styles.dart';
 import 'package:tmail_ui_user/main/utils/app_utils.dart';
 

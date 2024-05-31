@@ -28,6 +28,7 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tmail_ui_user/features/base/base_controller.dart';
 import 'package:tmail_ui_user/features/base/mixin/app_loader_mixin.dart';
+import 'package:tmail_ui_user/features/base/state/button_state.dart';
 import 'package:tmail_ui_user/features/composer/presentation/extensions/email_action_type_extension.dart';
 import 'package:tmail_ui_user/features/destination_picker/presentation/model/destination_picker_arguments.dart';
 import 'package:tmail_ui_user/features/email/domain/extensions/list_attachments_extension.dart';
@@ -129,19 +130,17 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
   final emailUnsubscribe = Rxn<EmailUnsubscribe>();
   final attachmentsViewState = RxMap<Id, Either<Failure, Success>>();
   final isEmailContentHidden = RxBool(false);
+  final currentEmailLoaded = Rxn<EmailLoaded>();
 
   EmailId? _currentEmailId;
   Identity? _identitySelected;
-  EmailLoaded? _currentEmailLoaded;
-  PrintEmailAction? _printEmailAction;
+  ButtonState? _printEmailButtonState;
 
   final StreamController<Either<Failure, Success>> _downloadProgressStateController =
       StreamController<Either<Failure, Success>>.broadcast();
   Stream<Either<Failure, Success>> get downloadProgressState => _downloadProgressStateController.stream;
 
   PresentationEmail? get currentEmail => mailboxDashBoardController.selectedEmail.value;
-
-  EmailLoaded? get currentEmailLoaded => _currentEmailLoaded;
 
   SingleEmailController(
     this._getEmailContentInteractor,
@@ -474,12 +473,12 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
     }
     emailSupervisorController.popEmailQueue(success.emailCurrent?.id);
 
-    _currentEmailLoaded = EmailLoaded(
+    currentEmailLoaded.value = EmailLoaded(
       htmlContent: success.htmlEmailContent,
       attachments: List.of(success.attachments),
       emailCurrent: success.emailCurrent,
     );
-    emailSupervisorController.pushEmailQueue(_currentEmailLoaded!);
+    emailSupervisorController.pushEmailQueue(currentEmailLoaded.value!);
 
     if (success.emailCurrent?.id == currentEmail?.id) {
       attachments.value = success.attachments;
@@ -518,12 +517,12 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
     }
     emailSupervisorController.popEmailQueue(success.emailCurrent?.id);
 
-    _currentEmailLoaded = EmailLoaded(
+    currentEmailLoaded.value = EmailLoaded(
       htmlContent: success.htmlEmailContent,
       attachments: List.of(success.attachments),
       emailCurrent: success.emailCurrent,
     );
-    emailSupervisorController.pushEmailQueue(_currentEmailLoaded!);
+    emailSupervisorController.pushEmailQueue(currentEmailLoaded.value!);
 
     if (success.emailCurrent?.id == currentEmail?.id) {
       attachments.value = success.attachments;
@@ -540,13 +539,6 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
         );
       } else {
         emailContents.value = success.htmlEmailContent;
-      }
-
-      if (_printEmailAction != null) {
-        _handlePrintEmailWhenEmailContentLoaded(
-          action: _printEmailAction!,
-          emailLoaded: _currentEmailLoaded!
-        );
       }
 
       if (PlatformInfo.isMobile) {
@@ -602,13 +594,12 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
 
   void _resetToOriginalValue({bool isEmailClosing = false}) {
     emailContents.value = null;
-    _currentEmailLoaded = null;
+    currentEmailLoaded.value = null;
     attachments.clear();
     attachmentsViewState.value = {};
     calendarEvent.value = null;
     eventActions.clear();
     emailUnsubscribe.value = null;
-    _printEmailAction = null;
     _identitySelected = null;
     if (isEmailClosing) {
       emailLoadedViewState.value = Right(UIState.idle);
@@ -1358,10 +1349,10 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
         mailboxDashBoardController.goToComposer(
           ComposerArguments.replyEmail(
             presentationEmail: presentationEmail,
-            content: _currentEmailLoaded?.htmlContent ?? '',
+            content: currentEmailLoaded.value?.htmlContent ?? '',
             mailboxRole: presentationEmail.mailboxContain?.role,
-            messageId: _currentEmailLoaded?.emailCurrent?.messageId,
-            references: _currentEmailLoaded?.emailCurrent?.references,
+            messageId: currentEmailLoaded.value?.emailCurrent?.messageId,
+            references: currentEmailLoaded.value?.emailCurrent?.references,
           )
         );
         break;
@@ -1369,10 +1360,10 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
         mailboxDashBoardController.goToComposer(
           ComposerArguments.replyAllEmail(
             presentationEmail: presentationEmail,
-            content: _currentEmailLoaded?.htmlContent ?? '',
+            content: currentEmailLoaded.value?.htmlContent ?? '',
             mailboxRole: presentationEmail.mailboxContain?.role,
-            messageId: _currentEmailLoaded?.emailCurrent?.messageId,
-            references: _currentEmailLoaded?.emailCurrent?.references,
+            messageId: currentEmailLoaded.value?.emailCurrent?.messageId,
+            references: currentEmailLoaded.value?.emailCurrent?.references,
           )
         );
         break;
@@ -1380,10 +1371,10 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
         mailboxDashBoardController.goToComposer(
           ComposerArguments.forwardEmail(
             presentationEmail: presentationEmail,
-            content: _currentEmailLoaded?.htmlContent ?? '',
+            content: currentEmailLoaded.value?.htmlContent ?? '',
             attachments: attachments,
-            messageId: _currentEmailLoaded?.emailCurrent?.messageId,
-            references: _currentEmailLoaded?.emailCurrent?.references,
+            messageId: currentEmailLoaded.value?.emailCurrent?.messageId,
+            references: currentEmailLoaded.value?.emailCurrent?.references,
           )
         );
         break;
@@ -1490,7 +1481,7 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
 
   void _handleParseCalendarEventFailure(ParseCalendarEventFailure failure) {
     emailLoadedViewState.value = Left<Failure, Success>(failure);
-    emailContents.value = _currentEmailLoaded?.htmlContent;
+    emailContents.value = currentEmailLoaded.value?.htmlContent;
   }
 
   void _enableScrollPageView() {
@@ -1624,26 +1615,34 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
   }
 
   void _printEmail(BuildContext context, PresentationEmail email) {
-    if (_printEmailAction != null) {
+    if (_printEmailButtonState == ButtonState.disabled) {
       log('SingleEmailController::_printEmail: Print email started');
       return;
     }
 
-    _printEmailAction = PrintEmailAction(
-      context: context,
-      userEmail: mailboxDashBoardController.userEmail,
-      email: email
-    );
-    consumeState(Stream.value(Right(PrintEmailLoading())));
+    _printEmailButtonState = ButtonState.disabled;
 
-    if (_currentEmailLoaded == null) {
-      log('SingleEmailController::_printEmail: Email content loading');
-      return;
-    }
-
-    _handlePrintEmailWhenEmailContentLoaded(
-      action: _printEmailAction!,
-      emailLoaded: _currentEmailLoaded!
+    consumeState(
+      _printEmailInteractor.execute(
+        EmailPrint(
+          appName: AppLocalizations.of(context).app_name,
+          userName: mailboxDashBoardController.userEmail,
+          emailInformation: email.toEmail(),
+          attachments: currentEmailLoaded.value!.attachments,
+          emailContent: currentEmailLoaded.value!.htmlContent,
+          locale: Localizations.localeOf(context).toLanguageTag(),
+          fromPrefix: AppLocalizations.of(context).from_email_address_prefix,
+          toPrefix: AppLocalizations.of(context).to_email_address_prefix,
+          ccPrefix: AppLocalizations.of(context).cc_email_address_prefix,
+          bccPrefix: AppLocalizations.of(context).bcc_email_address_prefix,
+          replyToPrefix: AppLocalizations.of(context).replyToEmailAddressPrefix,
+          titleAttachment: AppLocalizations.of(context).attachments.toLowerCase(),
+          toAddress: email.to?.listEmailAddressToString(isFullEmailAddress: true),
+          ccAddress: email.cc?.listEmailAddressToString(isFullEmailAddress: true),
+          bccAddress: email.bcc?.listEmailAddressToString(isFullEmailAddress: true),
+          replyToAddress: email.replyTo?.listEmailAddressToString(isFullEmailAddress: true),
+        )
+      )
     );
   }
 
@@ -1658,34 +1657,17 @@ class SingleEmailController extends BaseController with AppLoaderMixin {
   }
 
   void _handlePrintEmailSuccess(PrintEmailSuccess success) {
-    _printEmailAction = null;
+    _printEmailButtonState = ButtonState.enabled;
   }
 
   void _showMessageWhenEmailPrintingFailed(PrintEmailFailure failure) {
-    _printEmailAction = null;
+    _printEmailButtonState = ButtonState.enabled;
 
     if (currentOverlayContext != null && currentContext != null) {
       appToast.showToastErrorMessage(
         currentOverlayContext!,
         AppLocalizations.of(currentContext!).printingFailed);
     }
-  }
-
-  void _handlePrintEmailWhenEmailContentLoaded({
-    required PrintEmailAction action,
-    required EmailLoaded emailLoaded
-  }) {
-   if (action.email.id != emailLoaded.emailCurrent?.id) {
-     log('SingleEmailController::_handlePrintEmailInQueue: Print email action NOT matched email id');
-     _printEmailAction = null;
-     return;
-   }
-
-   consumeState(
-     _printEmailInteractor.execute(
-       EmailPrint.generate(printEmailAction: action, emailLoaded: emailLoaded)
-     )
-   );
   }
 
   void handleMailToAttendees(CalendarOrganizer? organizer, List<CalendarAttendee>? attendees) {

@@ -344,7 +344,7 @@ class EmailView extends GetWidget<SingleEmailController> {
             CalendarEventDetailWidget(
               calendarEvent: calendarEvent,
               eventActions: controller.eventActions,
-              emailContent: controller.currentEmailLoaded?.htmlContent ?? '',
+              emailContent: controller.currentEmailLoaded.value?.htmlContent ?? '',
               isDraggableAppActive: controller.mailboxDashBoardController.isAttachmentDraggableAppActive,
               onOpenComposerAction: controller.openNewComposerAction,
               onOpenNewTabAction: controller.openNewTabAction,
