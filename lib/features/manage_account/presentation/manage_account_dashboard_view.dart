@@ -53,7 +53,7 @@ class ManageAccountDashBoardView extends GetWidget<ManageAccountDashBoardControl
                       Obx(() {
                         if (controller.vacationResponse.value?.vacationResponderIsValid == true) {
                           return VacationNotificationMessageWidget(
-                              margin: const EdgeInsets.only(
+                              margin: EdgeInsets.only(
                                   top: 16,
                                   left: PlatformInfo.isWeb ? 24 : 16,
                                   right: PlatformInfo.isWeb ? 24 : 16),
@@ -67,7 +67,7 @@ class ManageAccountDashBoardView extends GetWidget<ManageAccountDashBoardControl
                             || controller.vacationResponse.value?.vacationResponderIsStopped == true)
                             && controller.accountMenuItemSelected.value == AccountMenuItem.vacation) {
                           return VacationNotificationMessageWidget(
-                              margin: const EdgeInsets.only(
+                              margin: EdgeInsets.only(
                                   top: 16,
                                   left: PlatformInfo.isWeb ? 24 : 16,
                                   right: PlatformInfo.isWeb ? 24 : 16),
