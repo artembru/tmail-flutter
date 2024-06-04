@@ -146,6 +146,18 @@ class SettingsFirstLevelView extends GetWidget<SettingsController> {
           endIndent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils)
         ),
         SettingFirstLevelTileBuilder(
+          AppLocalizations.of(context).notification,
+          controller.imagePaths.icNotification,
+          () => controller.selectSettings(AccountMenuItem.notification),
+          subtitle: AppLocalizations.of(context).allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone,
+        ),
+        Divider(
+          color: AppColor.colorDividerHorizontal,
+          height: 1,
+          indent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils),
+          endIndent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils)
+        ),
+        SettingFirstLevelTileBuilder(
           AppLocalizations.of(context).sign_out,
           controller.imagePaths.icSignOut,
           () => controller.manageAccountDashboardController.logout(

@@ -31,6 +31,7 @@ import 'package:tmail_ui_user/features/manage_account/presentation/mailbox_visib
 import 'package:tmail_ui_user/features/manage_account/presentation/model/account_menu_item.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/model/manage_account_arguments.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/model/settings_page_level.dart';
+import 'package:tmail_ui_user/features/manage_account/presentation/notification/bindings/notification_binding.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/profiles/profiles_bindings.dart';
 import 'package:tmail_ui_user/features/manage_account/presentation/vacation/vacation_controller_bindings.dart';
 import 'package:tmail_ui_user/main/error/capability_validator.dart';
@@ -209,6 +210,9 @@ class ManageAccountDashBoardController extends ReloadableController {
       case AccountMenuItem.mailboxVisibility:
         MailboxVisibilityBindings().dependencies();
         break;
+      case AccountMenuItem.notification:
+        NotificationBinding().dependencies();
+        break;
       case AccountMenuItem.vacation:
       case AccountMenuItem.none:
         break;
@@ -315,6 +319,7 @@ class ManageAccountDashBoardController extends ReloadableController {
     clearInputFormView();
     selectAccountMenuItem(AccountMenuItem.none);
     settingsPageLevel.value = SettingsPageLevel.universal;
+    NotificationBinding().close();
     _replaceBrowserHistory();
   }
 
