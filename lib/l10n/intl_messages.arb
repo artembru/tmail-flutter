@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2024-05-16T11:36:53.008027",
+  "@@last_modified": "2024-06-03T14:59:47.904907",
   "initializing_data": "Initializing data...",
   "@initializing_data": {
     "type": "text",
@@ -3728,6 +3728,42 @@
   },
   "downloadMessageAsEMLFailed": "Download message as EML failed",
   "@downloadMessageAsEMLFailed": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "notification": "Notification",
+  "@notification": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "notificationsDisabled": "Notifications disabled",
+  "@notificationsDisabled": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "pleaseAllowNotifications": "Please allow notifications from TwakeMail in the device's Settings",
+  "@pleaseAllowNotifications": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "goSettings": "Go Settings",
+  "@goSettings": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": "Allows TwakeMail to notify you when a new message arrives on your phone",
+  "@allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": {
+    "type": "text",
+    "placeholders_order": [],
+    "placeholders": {}
+  },
+  "showNotifications": "Show Notifications",
+  "@showNotifications": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
