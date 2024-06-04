@@ -52,9 +52,6 @@ class HomeController extends ReloadableController {
       _initFlutterDownloader();
       _registerReceivingSharingIntent();
     }
-    if (PlatformInfo.isIOS) {
-      _handleIOSDataMessage();
-    }
     super.onInit();
   }
 
@@ -91,6 +88,10 @@ class HomeController extends ReloadableController {
   static void downloadCallback(String id, DownloadTaskStatus status, int progress) {}
 
   void _cleanupCache() async {
+    if (PlatformInfo.isIOS) {
+      await _handleIOSDataMessage();
+    }
+
     await HiveCacheConfig.instance.onUpgradeDatabase(cachingManager);
 
     await Future.wait([

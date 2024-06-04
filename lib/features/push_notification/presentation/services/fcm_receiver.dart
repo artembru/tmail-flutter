@@ -17,7 +17,11 @@ Future<void> handleFirebaseBackgroundMessage(RemoteMessage message) async {
 }
 
 class FcmReceiver {
-  FcmReceiver._internal();
+  FcmReceiver._internal() {
+    if (PlatformInfo.isIOS) {
+      _setUpIOSNotificationInteraction();
+    }
+  }
 
   static final FcmReceiver _instance = FcmReceiver._internal();
 
@@ -36,9 +40,6 @@ class FcmReceiver {
     if (PlatformInfo.isWeb) {
       _onMessageBroadcastChannel();
       await _requestNotificationPermissionOnWeb();
-    } else if (PlatformInfo.isIOS) {
-      _setUpIOSNotificationInteraction();
-      await _onHandleFcmToken();
     } else {
       await _onHandleFcmToken();
     }
