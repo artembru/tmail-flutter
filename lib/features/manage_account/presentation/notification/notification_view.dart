@@ -27,8 +27,7 @@ class NotificationView extends GetWidget<NotificationController> with AppLoaderM
             child: Container(
               color: SettingsUtils.getContentBackgroundColor(context, controller.responsiveUtils),
               decoration: SettingsUtils.getBoxDecorationForContent(context, controller.responsiveUtils),
-              child: ListView(
-                physics: const ClampingScrollPhysics(),
+              child: Column(
                 children: [
                   Obx(() {
                     if (controller.notificationSettingEnabled.value == null) {

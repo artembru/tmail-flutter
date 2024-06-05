@@ -139,18 +139,20 @@ class SettingsFirstLevelView extends GetWidget<SettingsController> {
           AccountMenuItem.languageAndRegion.getIcon(controller.imagePaths),
           () => controller.selectSettings(AccountMenuItem.languageAndRegion)
         ),
-        Divider(
-          color: AppColor.colorDividerHorizontal,
-          height: 1,
-          indent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils),
-          endIndent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils)
-        ),
-        SettingFirstLevelTileBuilder(
-          AppLocalizations.of(context).notification,
-          controller.imagePaths.icNotification,
-          () => controller.selectSettings(AccountMenuItem.notification),
-          subtitle: AppLocalizations.of(context).allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone,
-        ),
+        if (PlatformInfo.isMobile) ...[
+          Divider(
+            color: AppColor.colorDividerHorizontal,
+            height: 1,
+            indent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils),
+            endIndent: SettingsUtils.getHorizontalPadding(context, controller.responsiveUtils)
+          ),
+          SettingFirstLevelTileBuilder(
+            AppLocalizations.of(context).notification,
+            controller.imagePaths.icNotification,
+            () => controller.selectSettings(AccountMenuItem.notification),
+            subtitle: AppLocalizations.of(context).allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone,
+          )
+        ],
         Divider(
           color: AppColor.colorDividerHorizontal,
           height: 1,
