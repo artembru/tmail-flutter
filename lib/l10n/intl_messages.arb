@@ -3744,19 +3744,19 @@
     "placeholders_order": [],
     "placeholders": {}
   },
-  "pleaseAllowNotifications": "Please allow notifications from TwakeMail in the device's Settings",
+  "pleaseAllowNotifications": "Please allow notifications from Twake Mail in the device's Settings",
   "@pleaseAllowNotifications": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
   },
-  "goSettings": "Go Settings",
-  "@goSettings": {
+  "goToSettings": "Go to Settings",
+  "@goToSettings": {
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
   },
-  "allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": "Allows TwakeMail to notify you when a new message arrives on your phone",
+  "allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": "Allows Twake Mail to notify you when a new message arrives on your phone",
   "@allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone": {
     "type": "text",
     "placeholders_order": [],

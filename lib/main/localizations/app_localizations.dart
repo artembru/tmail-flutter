@@ -3910,21 +3910,21 @@ class AppLocalizations {
 
   String get pleaseAllowNotifications {
     return Intl.message(
-      'Please allow notifications from TwakeMail in the device\'s Settings',
+      'Please allow notifications from Twake Mail in the device\'s Settings',
       name: 'pleaseAllowNotifications',
     );
   }
 
-  String get goSettings {
+  String get goToSettings {
     return Intl.message(
-      'Go Settings',
-      name: 'goSettings',
+      'Go to Settings',
+      name: 'goToSettings',
     );
   }
 
   String get allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone {
     return Intl.message(
-      'Allows TwakeMail to notify you when a new message arrives on your phone',
+      'Allows Twake Mail to notify you when a new message arrives on your phone',
       name: 'allowsTwakeMailToNotifyYouWhenANewMessageArrivesOnYourPhone',
     );
   }
