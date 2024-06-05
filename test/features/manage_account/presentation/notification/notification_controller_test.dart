@@ -21,7 +21,6 @@ import 'package:tmail_ui_user/features/manage_account/presentation/notification/
 import 'package:tmail_ui_user/main/bindings/network/binding_tag.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../email/presentation/controller/single_email_controller_test.mocks.dart';
 import 'notification_controller_test.mocks.dart';
 
 mockControllerCallback() => InternalFinalCallback<void>(callback: () {});
@@ -31,6 +30,19 @@ const fallbackGenerators = {
 };
 
 @GenerateNiceMocks([
+  // BaseController mocks start
+  MockSpec<CachingManager>(fallbackGenerators: fallbackGenerators),
+  MockSpec<LanguageCacheManager>(fallbackGenerators: fallbackGenerators),
+  MockSpec<AuthorizationInterceptors>(),
+  MockSpec<DynamicUrlInterceptors>(),
+  MockSpec<DeleteCredentialInteractor>(),
+  MockSpec<LogoutOidcInteractor>(),
+  MockSpec<DeleteAuthorityOidcInteractor>(),
+  MockSpec<AppToast>(),
+  MockSpec<ImagePaths>(),
+  MockSpec<ResponsiveUtils>(),
+  MockSpec<Uuid>(),
+  // BaseController mocks end
   MockSpec<GetNotificationSettingInteractor>(),
   MockSpec<ToggleNotificationSettingInteractor>(),
   MockSpec<SettingsController>(fallbackGenerators: fallbackGenerators),
