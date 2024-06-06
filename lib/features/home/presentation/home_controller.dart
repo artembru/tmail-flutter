@@ -1,3 +1,4 @@
+import 'package:core/utils/app_logger.dart';
 import 'package:core/utils/platform_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -52,6 +53,9 @@ class HomeController extends ReloadableController {
       _initFlutterDownloader();
       _registerReceivingSharingIntent();
     }
+    if (PlatformInfo.isIOS) {
+      _handleIOSDataMessage();
+    }
     super.onInit();
   }
 
@@ -87,11 +91,7 @@ class HomeController extends ReloadableController {
 
   static void downloadCallback(String id, DownloadTaskStatus status, int progress) {}
 
-  void _cleanupCache() async {
-    if (PlatformInfo.isIOS) {
-      await _handleIOSDataMessage();
-    }
-
+  Future<void> _cleanupCache() async {
     await HiveCacheConfig.instance.onUpgradeDatabase(cachingManager);
 
     await Future.wait([
@@ -123,7 +123,8 @@ class HomeController extends ReloadableController {
       _emailIdPreview = Get.arguments;
     } else {
       final notificationInfo = await FcmReceiver.instance.getIOSInitialNotificationInfo();
-      if (notificationInfo != null && notificationInfo.containsKey('email_id')) {
+      log('HomeController::_handleIOSDataMessage:notificationInfo = $notificationInfo');
+      if (notificationInfo != null) {
         final emailId = notificationInfo['email_id'] as String?;
         if (emailId?.isNotEmpty == true) {
           _emailIdPreview = EmailId(Id(emailId!));

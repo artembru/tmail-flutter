@@ -120,14 +120,11 @@ class FcmReceiver {
     });
   }
 
-  Future<Map<String, dynamic>?> getIOSInitialNotificationInfo() async {
+  Future<dynamic> getIOSInitialNotificationInfo() async {
     try {
       final notificationInfo = await notificationInteractionChannel.invokeMethod('getInitialNotificationInfo');
-      log('FcmReceiver::getIOSInitialNotificationInfo:notificationInfo: $notificationInfo');
-      if (notificationInfo != null && notificationInfo is Map<String, dynamic>) {
-        return notificationInfo;
-      }
-      return null;
+      log('FcmReceiver::getIOSInitialNotificationInfo:notificationInfo: $notificationInfo | TYPE = ${notificationInfo.runtimeType}');
+      return notificationInfo;
     } catch (e) {
       logError('FcmReceiver::getIOSInitialNotificationInfo: Exception: $e');
       return null;
